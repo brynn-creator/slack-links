@@ -146,15 +146,12 @@
             statusMsg.className = 'status-message';
             
             try {
-                const response = await fetch('https://hooks.slack.com/triggers/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', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "inventory_item": "Brake Cleaner"
-                    })
-                });
+                
+               POST https://hooks.slack.com/triggers/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
+Content-type: application/json
+{
+    "text": "Hello, world."
+}
                 
                 loading.classList.remove('active');
                 
