@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reorder: Brake Parts Cleaner</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        .product-name {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+        .info-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .reorder-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .reorder-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+        .reorder-btn:active {
+            transform: translateY(0);
+        }
+        .reorder-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+        .loading.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🧴</div>
+        <h1>Reorder Request</h1>
+        
+        <div class="product-name">
+            Brake Parts Cleaner<br>(non-chlorinated)
+        </div>
+        
+        <div class="info-box">
+            <p><strong>📦 Reorder Threshold:</strong> 12 cans</p>
+            <p><strong>📋 Action:</strong> Notifies team & adds to reorder list</p>
+        </div>
+        
+        <button id="reorderBtn" class="reorder-btn" onclick="submitReorder()">
+            ✓ Confirm Reorder
+        </button>
+        
+        <div id="loading" class="loading">
+            <p>Sending request...</p>
+        </div>
+        
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+    
+    <script>
+        async function submitReorder() {
+            const btn = document.getElementById('reorderBtn');
+            const loading = document.getElementById('loading');
+            const statusMsg = document.getElementById('statusMessage');
+            
+            // Disable button and show loading
+            btn.disabled = true;
+            loading.classList.add('active');
+            statusMsg.style.display = 'none';
+            statusMsg.className = 'status-message';
+            
+            try {
+                const response = await fetch('https://hooks.slack.com/triggers/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', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "": "Brake Cleaner"
+                    })
+                });
+                
+                loading.classList.remove('active');
+                
+                if (response.ok) {
+                    statusMsg.textContent = '✓ Reorder request submitted successfully! Team has been notified.';
+                    statusMsg.classList.add('success');
+                    statusMsg.style.display = 'block';
+                    
+                    // Keep button disabled after success
+                    btn.textContent = '✓ Request Sent';
+                } else {
+                    throw new Error('Request failed');
+                }
+            } catch (error) {
+                loading.classList.remove('active');
+                statusMsg.textContent = '✗ Failed to submit request. Please try again or contact IT.';
+                statusMsg.classList.add('error');
+                statusMsg.style.display = 'block';
+                btn.disabled = false;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
