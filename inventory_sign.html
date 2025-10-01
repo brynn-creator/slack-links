@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,25 +147,24 @@
             statusMsg.className = 'status-message';
             
             try {
-                // Call your Netlify serverless function with flattened payload
-                const response = await fetch('/.netlify/functions/reorder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify("Brake Cleaner")
-                });
                 
-                const data = await response.json();
+               POST https://hooks.slack.com/triggers/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
+Content-type: application/json
+{
+    "text": "Hello, world."
+}
+                
                 loading.classList.remove('active');
                 
                 if (response.ok) {
                     statusMsg.textContent = '✓ Reorder request submitted successfully! Team has been notified.';
                     statusMsg.classList.add('success');
                     statusMsg.style.display = 'block';
+                    
+                    // Keep button disabled after success
                     btn.textContent = '✓ Request Sent';
                 } else {
-                    throw new Error(data.error || 'Request failed');
+                    throw new Error('Request failed');
                 }
             } catch (error) {
                 loading.classList.remove('active');
